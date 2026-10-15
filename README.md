@@ -1,5 +1,7 @@
 # KyGround evaluation harness
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.23388561.svg)](https://doi.org/10.5281/zenodo.23388561)
+
 Software of the KyGround study, which compares tool-calling retrieval with vector retrieval-augmented generation
 (RAG) for a small, community-edited Greek–English agricultural knowledge base, the DASK platform of the Kythera pilot
 of the PoliRURAL Plus project.
@@ -29,7 +31,8 @@ freshness after edits, E3, disclosure of hidden content, and E4, the search sett
 | Data deposit (benchmark, run outputs, extended data, CC BY 4.0) | https://doi.org/10.5281/zenodo.23339394 |
 | Preprint, accuracy and robustness to how users type Greek | https://doi.org/10.48550/arXiv.2610.08205 |
 | Preprint, freshness and access control | https://doi.org/10.20944/preprints202610.0645.v1 |
-| Archived release of this software | DOI to be added after the first release |
+| Archived release of this software, version 1.0.0 | https://doi.org/10.5281/zenodo.23388561 |
+| All versions of this software | https://doi.org/10.5281/zenodo.23388560 |
 
 ## Installation
 

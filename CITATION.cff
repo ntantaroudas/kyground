@@ -22,7 +22,6 @@ keywords:
   - Greeklish
   - benchmark
   - evaluation
-# Add after the first release, with the repository address and the DOI that Zenodo assigns:
-# repository-code: "https://github.com/<account>/kyground"
-# doi: "10.5281/zenodo.<id>"
-# date-released: <YYYY-MM-DD>
+repository-code: "https://github.com/ntantaroudas/kyground"
+doi: "10.5281/zenodo.23388561"
+date-released: 2026-10-15
