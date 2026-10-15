@@ -1,0 +1,46 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "kyground"
+version = "1.0.0"
+description = "KyGround: a bilingual (Greek/English) benchmark and harness comparing tool-calling retrieval with vector RAG for a small, community-edited agricultural knowledge base (DASK / Kythera pilot, PoliRURAL Plus)."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [
+  { name = "Nikolaos D. Tantaroudas" },
+  { name = "Ilias Karachalios" },
+  { name = "Andrew J. McCracken" },
+]
+dependencies = [
+  "numpy>=1.24",
+  "pandas>=2.0",
+  "scipy>=1.10",
+  "statsmodels>=0.14",
+  "matplotlib>=3.7",
+  "pyyaml>=6.0",
+  "requests>=2.31",
+  "beautifulsoup4>=4.12",
+  "lxml>=4.9",
+  "openpyxl>=3.1",
+  "tqdm>=4.66",
+  "openai>=1.40",
+  "anthropic>=0.40",
+]
+
+[project.optional-dependencies]
+local-embeddings = ["sentence-transformers>=3.0"]
+session = ["tiktoken>=0.7"]
+dev = ["pytest>=7.4"]
+
+[project.scripts]
+kyground = "kyground.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]

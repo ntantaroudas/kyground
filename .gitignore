@@ -1,0 +1,26 @@
+# secrets
+.env
+# Python
+__pycache__/
+*.pyc
+.pytest_cache/
+*.egg-info/
+build/
+dist/
+.venv/
+# run outputs and model cache
+runs/
+# data with names of natural persons: never in a public repository (see README, "Data protection")
+data/snapshots/
+data/benchmark/
+data/release/
+release/
+# generated manuscript versions
+paper/manuscript_ORE.filled.md
+paper/manuscript_ORE.final.md
+paper/manuscript_v1.expanded.md
+paper/docx/manuscript_v1.json
+paper/sensitivity/
+paper/results/
+paper/figures/
+~$*.xlsx

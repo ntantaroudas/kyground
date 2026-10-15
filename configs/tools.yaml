@@ -1,0 +1,135 @@
+# The nine `kythera` sub-tools exposed to the agent (ORE article, Methods).
+#
+# RECONSTRUCTED from the article: names and signatures of
+# search_kythera_knowledge(query, lang, limit) and
+# get_seasonal_calendar(month, crop_type, lang) are documented; the other
+# names and all descriptions are reconstructions. For maximum fidelity, replace
+# the descriptions with the production ones from the prp-raven catalogue
+# (tool descriptions drive the semantic routing), and record the change in
+# protocol/deviations.md.
+#
+# The geospatial WKT envelope is NOT a model parameter: it is injected by the
+# backend for the two spatially aware tools.
+
+tools:
+  - name: search_kythera_knowledge
+    endpoint: knowledge/search
+    description: >-
+      Search the curated local knowledge base of Kythera and Antikythera:
+      articles, traditional agricultural practices and frequently asked
+      questions (olive growing, harvesting and pruning, beekeeping and thyme
+      honey, organic certification, selling on the platform). Use it for local
+      "how / when / why" farming questions.
+    parameters:
+      query: {type: string, description: "Search terms, preferably in Greek, e.g. 'συγκομιδή ελιάς'."}
+      lang: {type: string, enum: [el, en], description: "Response language."}
+      limit: {type: integer, description: "Maximum number of results (1-10).", default: 5}
+    required: [query]
+
+  - name: get_crop_info
+    endpoint: crops/{type}
+    description: >-
+      Get the record of a crop grown on Kythera (for example olive, Koroneiki
+      olive, grape vine, thyme, oregano): scientific name, planting period,
+      harvest period, description, related traditional practices and
+      seasonal-calendar entries.
+    parameters:
+      crop_type: {type: string, description: "Crop name or slug, e.g. 'olive', 'koroneiki-olive', 'Θυμάρι'."}
+      lang: {type: string, enum: [el, en]}
+    required: [crop_type]
+
+  - name: get_seasonal_calendar
+    endpoint: knowledge/seasonal-calendar
+    description: >-
+      Seasonal farming calendar of Kythera: the agricultural activities
+      scheduled in a given month, optionally for one crop.
+    parameters:
+      month: {type: integer, description: "Month number 1-12."}
+      crop_type: {type: string, description: "Optional crop name, e.g. 'Αμπέλι'."}
+      lang: {type: string, enum: [el, en]}
+    required: []
+
+  - name: lookup_glossary
+    endpoint: glossary/lookup
+    description: >-
+      Glossary of agricultural terms used on Kythera, including regional
+      (Kytherian) dialect words, with their definitions.
+    parameters:
+      term: {type: string, description: "Term to look up."}
+      lang: {type: string, enum: [el, en]}
+    required: [term]
+
+  - name: search_local_products
+    endpoint: products/search
+    description: >-
+      Search the catalogue of local products sold on the platform (honey,
+      olive oil, sea salt, wine, pasteli, beer and others): producer,
+      category, availability and price. Prices may be "on request".
+    parameters:
+      query: {type: string, description: "Product or producer search terms."}
+      category: {type: string, description: "Optional category, e.g. 'ΜΕΛΙ', 'Λάδι', 'Αλάτι'."}
+      lang: {type: string, enum: [el, en]}
+      limit: {type: integer, default: 10}
+    required: [query]
+
+  - name: search_experiences
+    endpoint: experiences/search
+    description: >-
+      Search agritourism experiences on Kythera (workshops, beekeeping and
+      harvest experiences, cooking, guided tours and drives). Results are
+      restricted to the active map area and ordered by proximity; each result
+      gives duration, maximum group size, location, availability and price.
+    parameters:
+      query: {type: string, description: "Optional search terms (theme, place or title)."}
+      lang: {type: string, enum: [el, en]}
+      limit: {type: integer, default: 10}
+    required: []
+
+  - name: search_cooperatives
+    endpoint: cooperatives/search
+    description: >-
+      Directory of the agricultural cooperatives of Kythera (olive-oil,
+      beekeeping, wine, aromatic plants), restricted to the active map area
+      and ordered by proximity.
+    parameters:
+      query: {type: string, description: "Optional search terms."}
+      lang: {type: string, enum: [el, en]}
+      limit: {type: integer, default: 10}
+    required: []
+
+  - name: list_training_modules
+    endpoint: training/modules
+    description: >-
+      List the platform's training modules (digital skills, digital
+      marketing, e-commerce, agritourism, sustainable farming) with category,
+      level, duration, number of lessons and lesson titles and slugs.
+    parameters:
+      category: {type: string, description: "Optional category filter."}
+      lang: {type: string, enum: [el, en]}
+    required: []
+
+  - name: get_lesson_content
+    endpoint: training/modules/{module}/lessons/{slug}
+    description: >-
+      Full text of one lesson of a training module. Use module and lesson
+      slugs returned by list_training_modules.
+    parameters:
+      module_slug: {type: string}
+      lesson_slug: {type: string}
+      lang: {type: string, enum: [el, en]}
+    required: [module_slug, lesson_slug]
+
+# C1q only (not offered to C2): the router model formulates the vector-search query by calling a single search
+# tool with the same name and query description as the knowledge-search tool above, so that C1q and C2 share the
+# model, the prompt and the function-calling mechanism and differ only in what the call retrieves.
+rag_tool:
+  name: search_kythera_knowledge
+  description: >-
+    Search everything published on the Kythera and Antikythera platform: articles, traditional agricultural
+    practices, frequently asked questions, crops, the seasonal calendar, the glossary, local products and
+    producers, agritourism experiences, cooperatives, and training modules and lessons. Returns the most
+    relevant passages.
+  parameters:
+    query: {type: string, description: "Search terms, preferably in Greek, e.g. 'συγκομιδή ελιάς'."}
+  required: [query]
+

@@ -1,0 +1,113 @@
+# KyGround study configuration (protocol v0.4, 2026-10-05).
+# Frozen before the first generation round (SHA-256 in protocol/freeze_v0.4.json); any later change is recorded in
+# protocol/deviations.md.
+
+seed: 20261005
+
+paths:
+  # Frozen knowledge-base snapshot used by every condition: the platform's public pages on 5 October 2026.
+  # All experiments run on in-memory copies of it, so later edits on the platform cannot affect them.
+  snapshot: data/snapshots/public_20261005/records.jsonl
+  benchmark_dir: data/benchmark/v1.0
+  curated_items: data/benchmark/curated_items.yaml
+  review_decisions: data/benchmark/review_decisions.yaml   # optional manual review (review-export/-import); none
+  runs_dir: runs
+  cache_dir: runs/cache
+
+prompts: configs/prompts.yaml
+tools: configs/tools.yaml
+
+models:
+  # All generation runs inside a Claude session, without API keys (protocol v0.4, section 3.1): Claude Haiku 4.5
+  # sub-agents act as the router and the answer model of every condition (provider `session`: requests are queued,
+  # exported in batches with `kyground gen-export`, answered by one sub-agent per batch and stored in the request
+  # cache with `kyground gen-import`). The deployed assistant's OpenAI models (gpt-5-mini router, gpt-5-nano
+  # answers) are replaced by one model family for all conditions.
+  answer:   {provider: session, model: claude-haiku-4-5, max_output_tokens: 4000}
+  router:   {provider: session, model: claude-haiku-4-5, max_output_tokens: 2000}
+  # Judge (second scorer): Claude Sonnet sub-agents (kyground judge-export / judge-import; no API key).
+  judge:    {provider: session, model: claude-sonnet-5-5, max_output_tokens: 800}
+
+session:
+  queue: runs/session/pending.jsonl     # requests waiting for generation (written by the runners)
+  batches: runs/session/batches         # batch_NNN.md (requests) and batch_NNN.out.jsonl (replies), manifest.jsonl
+  model_label: "claude-haiku-4-5 (Claude session sub-agent)"
+  max_chars: 45000                      # request text per batch (the shared system prompt comes on top)
+  max_requests: {answer: 20, router: 40, rewrite: 40}
+  token_estimate: o200k_base            # tiktoken encoding used to estimate the tokens of each request (proxy)
+
+embedder:
+  provider: st                # local sentence-transformers model on CPU (no API): openai | st | hash
+  model: BAAI/bge-m3
+
+retrieval:
+  # Chosen on the development split by gold-record recall, without model calls (`kyground tune-rag --retrieval`,
+  # runs/tune/rag_tuning.*): the smallest context within 0.02 of the best recall (0.972, 72 dev questions).
+  k: 8
+  max_chars: 800
+
+replica:
+  # search_mode follows the platform's public search, probed on 5 October 2026 (`kyground probe-public`;
+  # protocol/evidence/public_search_probe_20261005.*): case-insensitive substring matching (final sigma folded),
+  # sensitive to accents, word order and inflection, no Greeklish. The other settings follow the system article or
+  # are assumptions; `kyground probe-api` would check them against the data interface (needs its key; not used in
+  # v0.4).
+  search_mode: phrase_casefold        # free text: phrase_casefold | phrase_unaccent | tokens_all_stem | tokens_any_stem
+  filter_mode: unaccent               # structured filters (crop type, category): unaccent | casefold
+  spatial_missing_coords: include     # experiences/cooperatives without coordinates: include | exclude
+  ranking: relevance                  # order before truncation: relevance | stored
+  default_limit: 5
+
+live_api:
+  base_url: https://dask-platform.onrender.com/api/v1/
+  key_env: DASK_API_KEY
+  min_interval_s: 1.0
+  params: {}                  # override query-parameter names if probe-api --discover shows others
+
+agent:
+  max_tool_calls: 2           # production cap
+  max_router_steps: 2
+  max_tool_chars: 12000
+
+accuracy:
+  conditions: [C0, C1, C1q, C2, C3, C4]
+  split: test
+  forms: [el, en]             # canonical forms: all six conditions
+  robustness:                 # the seven other surface forms: vector RAG and tool retrieval only (v0.4 scope)
+    conditions: [C1, C2]
+    forms: [el_noacc, el_caps, grk_elot, grk_phon, grk_visual, el_infl, el_colloq]
+  reps: 1
+  workers: 8
+  item_statuses: [verified]   # real runs use only items that passed `kyground verify-gold` (mock runs use all)
+
+ablation:
+  # E4: the tool path with different server-side search normalisation
+  search_modes: [phrase_casefold, phrase_unaccent, tokens_all_stem]
+  forms: [el, el_noacc, el_caps, grk_elot, grk_phon, grk_visual, el_infl, el_colloq]
+
+freshness:
+  variants: [C1-batch, C1-upsert, C2]
+  n_events: 48
+  langs: [el]
+  workers: 4
+
+governance:
+  variants: [C1-batch, C1-raw, C2, C4]
+  phases: {C1-batch: [G1, G23], C1-raw: [G1], C2: [G1, G23], C4: [G1]}
+  n_per_kind: 12
+  langs: [el, en]
+  workers: 4
+
+judge_session:
+  # What the sub-agent judge grades: all canonical Greek test answers of the six main conditions, a seeded sample of
+  # the English ones, and a seeded sample of the controlled suite (graded before deposit); one sub-agent per batch.
+  forms: [el, en]
+  sample: {en: 300}
+  suite_sample: 350
+  batch_size: 50
+
+analysis:
+  n_boot: 10000
+
+# Costs are reported as estimated tokens per query (session generation has no per-call price).
+pricing: {}

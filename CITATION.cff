@@ -1,0 +1,28 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+title: "KyGround evaluation harness"
+version: 1.0.0
+license: MIT
+authors:
+  - family-names: Tantaroudas
+    given-names: Nikolaos D.
+    affiliation: "Institute of Communication and Computer Systems (ICCS), National Technical University of Athens"
+    email: nikolaos.tantaroudas@iccs.gr
+    orcid: "https://orcid.org/0000-0001-6727-1014"
+  - family-names: Karachalios
+    given-names: Ilias
+    affiliation: "University of Thessaly"
+  - family-names: McCracken
+    given-names: Andrew J.
+    affiliation: "DASKALOS-APPS"
+keywords:
+  - retrieval-augmented generation
+  - tool calling
+  - Greek
+  - Greeklish
+  - benchmark
+  - evaluation
+# Add after the first release, with the repository address and the DOI that Zenodo assigns:
+# repository-code: "https://github.com/<account>/kyground"
+# doi: "10.5281/zenodo.<id>"
+# date-released: <YYYY-MM-DD>

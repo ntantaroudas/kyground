@@ -1,0 +1,49 @@
+{
+  "title": "KyGround evaluation harness",
+  "upload_type": "software",
+  "description": "Software of the KyGround study, which compares tool-calling retrieval with vector retrieval-augmented generation (RAG) for a small, community-edited Greek–English agricultural knowledge base, the DASK platform of the Kythera pilot of the PoliRURAL Plus project. The harness builds the bilingual benchmark from a snapshot of the platform's public records, verifies every reference answer, runs six retrieval conditions in four experiments (accuracy and robustness to how users type Greek, freshness after edits, disclosure of hidden content and search settings), scores the answers with a Greek-aware rule-based scorer and an LLM judge, audits batched generation for cross-request contamination and writes the result tables and figures. The benchmark and the run outputs are in the data deposit https://doi.org/10.5281/zenodo.23339394.",
+  "creators": [
+    {
+      "name": "Tantaroudas, Nikolaos D.",
+      "affiliation": "Institute of Communication and Computer Systems (ICCS), National Technical University of Athens",
+      "orcid": "0000-0001-6727-1014"
+    },
+    {
+      "name": "Karachalios, Ilias",
+      "affiliation": "University of Thessaly"
+    },
+    {
+      "name": "McCracken, Andrew J.",
+      "affiliation": "DASKALOS-APPS"
+    }
+  ],
+  "license": "mit",
+  "access_right": "open",
+  "keywords": [
+    "retrieval-augmented generation",
+    "tool calling",
+    "Greek",
+    "Greeklish",
+    "benchmark",
+    "evaluation",
+    "agricultural advisory services"
+  ],
+  "related_identifiers": [
+    {
+      "identifier": "https://doi.org/10.5281/zenodo.23339394",
+      "relation": "isSupplementTo",
+      "resource_type": "dataset"
+    },
+    {
+      "identifier": "https://doi.org/10.48550/arXiv.2610.08205",
+      "relation": "isSupplementTo",
+      "resource_type": "publication-preprint"
+    },
+    {
+      "identifier": "https://doi.org/10.20944/preprints202610.0645.v1",
+      "relation": "isSupplementTo",
+      "resource_type": "publication-preprint"
+    }
+  ],
+  "language": "eng"
+}
